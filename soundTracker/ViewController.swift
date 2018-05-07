@@ -11,6 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     
     var recorder : Recorder!
+    var path : String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +26,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func playRecord(_ sender: UIButton) {
-        recorder!.play()
+        path = recorder!.play()
+        let sender = Sender()
+        sender.send(_path: path)
     }
     
     @IBAction func recordRecord(_ sender: UIButton) {

@@ -43,7 +43,7 @@ class Recorder {
             recorder!.record()
             timeFlag = 0
             timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(checkStop), userInfo: nil, repeats: true)
-            
+            print("Start Recording!")
         }
         
     }
@@ -57,12 +57,15 @@ class Recorder {
         }
     }
     
-    func play () {
+    func play () -> String? {
         player = try! AVAudioPlayer(contentsOf: URL(string: outputFilePath!)!)
+        print(outputFilePath!)
         if (player == nil) {
             print("Play Failed!")
         } else {
             player?.play()
+            print("Start Playing!")
         }
+        return outputFilePath!
     }
 }

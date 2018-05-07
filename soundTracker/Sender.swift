@@ -10,15 +10,16 @@ import Foundation
 import Alamofire
 
 class Sender {
-    func send () {
-        let url = "http://127.0.0.1:8080/uploadSound"
-        let path = Bundle.main.path(forResource: "L6 Homework", ofType: "docx")
+    func send (_path : String?) {
+        let url = "http://192.168.1.101:8080/uploadSound"
+        // let path = Bundle.main.path(forResource: "record", ofType: "wav")
+        let path = _path
         // let data = try? Data.init(referencing: NSData.init(contentsOfFile: path!))
         let data = try? Data.init(contentsOf: URL(fileURLWithPath: path!))
         print("Uploading!...")
         Alamofire.upload(
             multipartFormData: { (multipartData) in
-                multipartData.append(data!, withName: "file", fileName: "L6 HomeWork.docx", mimeType: "application/octet-stream")
+                multipartData.append(data!, withName: "file", fileName: "record.wav", mimeType: "audio/x-wav")
             }, to: url,
             encodingCompletion: { (encodingResult) in
                 switch (encodingResult) {
