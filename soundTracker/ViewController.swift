@@ -9,12 +9,14 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    var recorder : Recorder!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        let sender = Sender()
-        sender.send()
+        // let sender = Sender()
+        // sender.send()
     }
 
     override func didReceiveMemoryWarning() {
@@ -22,6 +24,13 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    @IBAction func playRecord(_ sender: UIButton) {
+        recorder!.play()
+    }
+    
+    @IBAction func recordRecord(_ sender: UIButton) {
+        recorder = Recorder()
+        recorder.record()
+    }
 }
 
