@@ -11,7 +11,8 @@ import Alamofire
 
 class Sender {
     func send (_path : String?) {
-        let url = "http://192.168.1.101:8080/uploadSound"
+        // url需要随时修改
+        let url = "http://181.215.102.4:8080/uploadSound"
         // let path = Bundle.main.path(forResource: "record", ofType: "wav")
         let path = _path
         // let data = try? Data.init(referencing: NSData.init(contentsOfFile: path!))

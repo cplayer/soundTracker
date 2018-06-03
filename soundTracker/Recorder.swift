@@ -20,12 +20,15 @@ class Recorder {
     
     init () {
         recordSetting = [
-            AVFormatIDKey: NSNumber(value: kAudioFormatLinearPCM),
+            AVFormatIDKey: Int(kAudioFormatLinearPCM),
             // 单声道
             AVNumberOfChannelsKey: 1,
             // 每秒录音样本数
             AVSampleRateKey: 48000,
-            AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue
+            AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue,
+            AVLinearPCMBitDepthKey: 16,
+            AVLinearPCMIsFloatKey: false,
+            AVLinearPCMIsBigEndianKey:false,
         ]
         timeFlag = 0
     }
@@ -54,6 +57,7 @@ class Recorder {
             timer.invalidate()
             recorder?.stop();
             recorder = nil;
+            print("Stop Recording!")
         }
     }
     
