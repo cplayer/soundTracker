@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kronos
 
 class ViewController: UIViewController {
     
@@ -18,6 +19,10 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         // let sender = Sender()
         // sender.send()
+        Clock.sync(from: "202.120.2.101",first: { date, offset in
+            print("Least accurate time: \(date)")
+        })
+        
     }
 
     override func didReceiveMemoryWarning() {

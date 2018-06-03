@@ -8,5 +8,6 @@ target 'soundTracker' do
 
   # Pods for soundTracker
   pod 'Alamofire', '~> 4.7'
+  pod 'Kronos'
 
 end
