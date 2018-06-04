@@ -9,6 +9,17 @@
 import Foundation
 import AVFoundation
 import UIKit
+import Alamofire
+import Kronos
+
+extension Date {
+    
+    /// 获取当前 毫秒级 时间戳 - 13位
+    var milliStamp : TimeInterval {
+        let timeInterval: TimeInterval = self.timeIntervalSince1970
+        return timeInterval
+    }
+}
 
 class Recorder {
     var recorder : AVAudioRecorder?
@@ -17,6 +28,7 @@ class Recorder {
     var timer : Timer!
     var timeFlag : Int
     var player : AVAudioPlayer?
+    
     
     init () {
         recordSetting = [
@@ -43,10 +55,27 @@ class Recorder {
         recorder = try! AVAudioRecorder(url: URL(string: outputFilePath!)!, settings: recordSetting!)
         if (recorder != nil) {
             recorder!.prepareToRecord()
-            recorder!.record()
-            timeFlag = 0
-            timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(checkStop), userInfo: nil, repeats: true)
-            print("Start Recording!")
+            
+            Alamofire.request("http://127.0.0.1:8000").responseString { response in
+                if let data = response.data, let timetext = String(data: data, encoding: .ascii) {
+                    let number = (timetext as NSString).doubleValue
+                    let timeInterval:TimeInterval = TimeInterval(number/1000.0)
+                    var now = Clock.now?.milliStamp
+                    print("Expect: \(timeInterval); Now: \(String(describing: now))")
+                    let sleeptime = timeInterval - now!
+                    if sleeptime < 0 {
+                        return
+                    }
+                    usleep(useconds_t(sleeptime*1000000))
+                    now = Clock.now?.milliStamp
+                    print("Expect: \(timeInterval); Now: \(String(describing: now))")
+                    self.recorder!.record()
+                    self.timeFlag = 0
+                    self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.checkStop), userInfo: nil, repeats: true)
+                    print("Start Recording!")
+                }
+            }
+            
         }
         
     }
