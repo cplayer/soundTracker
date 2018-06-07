@@ -56,17 +56,17 @@ class Recorder {
         if (recorder != nil) {
             recorder!.prepareToRecord()
             
-            Alamofire.request("http://127.0.0.1:8000").responseString { response in
+            Alamofire.request("http://218.193.181.12:18020").responseString { response in
                 if let data = response.data, let timetext = String(data: data, encoding: .ascii) {
                     let number = (timetext as NSString).doubleValue
                     let timeInterval:TimeInterval = TimeInterval(number/1000.0)
                     var now = Clock.now?.milliStamp
                     print("Expect: \(timeInterval); Now: \(String(describing: now))")
                     let sleeptime = timeInterval - now!
-                    if sleeptime < 0 {
+                    if sleeptime < 0.05 {
                         return
                     }
-                    usleep(useconds_t(sleeptime*1000000))
+                    usleep(useconds_t(sleeptime*1000000) - 50000)
                     now = Clock.now?.milliStamp
                     print("Expect: \(timeInterval); Now: \(String(describing: now))")
                     self.recorder!.record()
@@ -82,11 +82,14 @@ class Recorder {
     
     @objc func checkStop () {
         timeFlag += 1
-        if (timeFlag > 20) {
+        if (timeFlag > 10) {
             timer.invalidate()
             recorder?.stop();
             recorder = nil;
             print("Stop Recording!")
+            
+            let sender = Sender()
+            sender.send(_path: outputFilePath)
         }
     }
     
