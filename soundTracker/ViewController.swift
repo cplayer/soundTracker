@@ -37,6 +37,7 @@ import CoreMotion
 
 class ViewController: UIViewController {
     
+    // mute system card
     fileprivate var card: Card!
     
     fileprivate var toolbar: Toolbar!
@@ -51,6 +52,21 @@ class ViewController: UIViewController {
     
     fileprivate var setLocationButton: IconButton!
     
+    // for play music card
+    fileprivate var cardPlayMusic: Card!
+    
+    fileprivate var toolbarPlayMusic: Toolbar!
+    fileprivate var moreButtonPlayMusic: IconButton!
+    
+    fileprivate var contentViewPlayMusic: UILabel!
+    
+    fileprivate var bottomBarPlayMusic: Bar!
+//    fileprivate var dateFormatterP: DateFormatter!
+    fileprivate var dateLabelPlayMusic: UILabel!
+//    fileprivate var favoriteButton: IconButton!
+    fileprivate var setLocationButtonPlayMusic: IconButton!
+    
+    // for recording sound
     var recorder : Recorder!
     var path : String?
     
@@ -67,7 +83,7 @@ class ViewController: UIViewController {
         prepareDateFormatter()
         prepareDateLabel()
         prepareSetLocationButton()
-        prepareFavoriteButton()
+        //prepareFavoriteButton()
         prepareMoreButton()
         prepareToolbar()
         prepareContentView()
@@ -110,8 +126,14 @@ class ViewController: UIViewController {
     }
     
     // SetLocationButton -> set action for current location
-    @objc func setLocationMuteSystem(sender: UIButton!) {
-        
+    @objc func setLocationMuteSystem() {
+        recorder = Recorder()
+        recorder.record()
+    }
+    
+    @objc func setLocationPlayMusic() {
+        recorder = Recorder()
+        recorder.record()
     }
     
 }
@@ -123,7 +145,7 @@ extension ViewController {
         let control = Switch(state: .off, style: .light, size: .small)
         control.delegate = self
         
-        view.layout(control).horizontally(left: 20, right: 20).bottom()
+        view.layout(control).horizontally(left: 20, right: 20).bottom(50)
     }
     
     fileprivate func prepareDateFormatter() {
@@ -137,10 +159,19 @@ extension ViewController {
         dateLabel.font = RobotoFont.regular(with: 12)
         dateLabel.textColor = Color.grey.base
         dateLabel.text = dateFormatter.string(from: Date.init())
+        
+        dateLabelPlayMusic = UILabel()
+        dateLabelPlayMusic.font = RobotoFont.regular(with: 12)
+        dateLabelPlayMusic.textColor = Color.grey.base
+        dateLabelPlayMusic.text = dateFormatter.string(from: Date.init())
     }
     
     fileprivate func prepareSetLocationButton() {
         setLocationButton = IconButton(image: Icon.cm.settings, tintColor: Color.blueGrey.base)
+        setLocationButton.addTarget(self, action: #selector(setLocationMuteSystem), for: UIControlEvents.touchUpInside)
+        
+        setLocationButtonPlayMusic = IconButton(image: Icon.cm.settings, tintColor: Color.blueGrey.base)
+        setLocationButtonPlayMusic.addTarget(self, action: #selector(setLocationPlayMusic), for: UIControlEvents.touchUpInside)
     }
     
     fileprivate func prepareFavoriteButton() {
@@ -149,6 +180,8 @@ extension ViewController {
     
     fileprivate func prepareMoreButton() {
         moreButton = IconButton(image: Icon.cm.moreVertical, tintColor: Color.grey.base)
+        
+        moreButtonPlayMusic = IconButton(image: Icon.cm.moreVertical, tintColor: Color.grey.base)
     }
     
     fileprivate func prepareToolbar() {
@@ -160,6 +193,14 @@ extension ViewController {
         toolbar.detail = "Activated when you're asleep."
         toolbar.detailLabel.textAlignment = .left
         toolbar.detailLabel.textColor = Color.grey.base
+        
+        // for play music card
+        toolbarPlayMusic = Toolbar(rightViews: [moreButtonPlayMusic])
+        toolbarPlayMusic.title = "Play Music"
+        toolbarPlayMusic.titleLabel.textAlignment = .left
+        toolbarPlayMusic.detail = "Activated at some specific place."
+        toolbarPlayMusic.detailLabel.textAlignment = .left
+        toolbarPlayMusic.detailLabel.textColor = Color.grey.base
     }
     
     fileprivate func prepareContentView() {
@@ -167,14 +208,26 @@ extension ViewController {
         contentView.numberOfLines = 0
         contentView.text = "Set the location of your iPhone close to (x, y) and then it will be muted automatically."
         contentView.font = RobotoFont.regular(with: 14)
+        
+        //for play music card
+        contentViewPlayMusic = UILabel()
+        contentViewPlayMusic.numberOfLines = 0
+        contentViewPlayMusic.text = "Set the location of your iPhone close to (x, y) and then it will play music for you!"
+        contentViewPlayMusic.font = RobotoFont.regular(with: 14)
     }
     
     fileprivate func prepareBottomBar() {
         bottomBar = Bar()
         
-        bottomBar.leftViews = [favoriteButton]
+//        bottomBar.leftViews = [favoriteButton]
+        bottomBar.leftViews = [setLocationButton]
         bottomBar.rightViews = [dateLabel]
-        bottomBar.centerViews = [setLocationButton]
+//        bottomBar.centerViews = [setLocationButton]
+        
+        // for Play Music Card
+        bottomBarPlayMusic = Bar()
+        bottomBarPlayMusic.leftViews = [setLocationButtonPlayMusic]
+        bottomBarPlayMusic.rightViews = [dateLabelPlayMusic]
     }
     
     fileprivate func prepareCard() {
@@ -191,7 +244,20 @@ extension ViewController {
         card.bottomBar = bottomBar
         card.bottomBarEdgeInsetsPreset = .wideRectangle2
         
-        view.layout(card).horizontally(left: 20, right: 20).center()
+        view.layout(card).horizontally(left: 20, right: 20).top(80)
+        
+        // for play music card
+        cardPlayMusic = Card()
+        cardPlayMusic.toolbar = toolbarPlayMusic
+        cardPlayMusic.toolbarEdgeInsetsPreset = .square3
+        cardPlayMusic.toolbarEdgeInsets.bottom = 0
+        cardPlayMusic.toolbarEdgeInsets.right = 8
+        cardPlayMusic.contentView = contentViewPlayMusic
+        cardPlayMusic.contentViewEdgeInsetsPreset = .wideRectangle3
+        cardPlayMusic.bottomBar = bottomBarPlayMusic
+        cardPlayMusic.bottomBarEdgeInsetsPreset = .wideRectangle2
+        
+        view.layout(cardPlayMusic).horizontally(left: 20, right: 20).top(250)
     }
 }
 
