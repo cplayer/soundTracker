@@ -9,8 +9,14 @@
 import Foundation
 import Alamofire
 
+protocol LocateProtocol{
+    func didLocate(id : Int, x : Double, y : Double)
+}
+
 class Sender {
-    func send (_path : String?) {
+    var locateDelegate:LocateProtocol!
+    
+    func send (_path : String?, id : Int) {
         // url需要随时修改
         let url = "http://218.193.181.12:18021/uploadSound"
         // let path = Bundle.main.path(forResource: "record", ofType: "wav")
@@ -28,6 +34,13 @@ class Sender {
                 print("Uploading Success!")
                 upload.responseJSON(completionHandler: { (response) in
                     print(String(data: response.data!, encoding: .utf8)!)
+                    let str = String(data: response.data!, encoding: .utf8)!
+                    let splitedArray = str.split(separator: " ")
+                    let x:Double = (splitedArray[0] as NSString).doubleValue
+                    let y:Double = (splitedArray[1] as NSString).doubleValue
+                    if id != 0 {
+                        self.locateDelegate.didLocate(id: id, x: x, y: y)
+                    }
                 })
             case .failure (let error):
                 print("Error in Uploading!")

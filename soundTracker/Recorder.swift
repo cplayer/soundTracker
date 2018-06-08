@@ -28,6 +28,8 @@ class Recorder {
     var timer : Timer!
     var timeFlag : Int
     var player : AVAudioPlayer?
+    var sender : Sender
+    var id : Int
     
     
     init () {
@@ -43,9 +45,12 @@ class Recorder {
             AVLinearPCMIsBigEndianKey:false,
         ]
         timeFlag = 0
+        sender = Sender()
+        id = 0
     }
     
-    func record () {
+    func record (id : Int) {
+        self.id = id
         let session : AVAudioSession = AVAudioSession.sharedInstance()
         try! session.setCategory(AVAudioSessionCategoryRecord)
         try! session.setActive(true)
@@ -88,8 +93,7 @@ class Recorder {
             recorder = nil;
             print("Stop Recording!")
             
-            let sender = Sender()
-            sender.send(_path: outputFilePath)
+            sender.send(_path: outputFilePath, id: self.id)
         }
     }
     
